@@ -3,10 +3,30 @@ package org.hexrobot.snescolor;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import javax.swing.Box;
+import java.awt.Dimension;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import java.awt.Color;
+import javax.swing.JButton;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.BoxLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.JMenuItem;
 
 public class MainWindow {
 
-    private JFrame frame;
+    private JFrame frmSnesColor;
 
     /**
      * Launch the application.
@@ -16,7 +36,7 @@ public class MainWindow {
             public void run() {
                 try {
                     MainWindow window = new MainWindow();
-                    window.frame.setVisible(true);
+                    window.frmSnesColor.setVisible(true);
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
@@ -35,9 +55,194 @@ public class MainWindow {
      * Initialize the contents of the frame.
      */
     private void initialize() {
-        frame = new JFrame();
-        frame.setBounds(100, 100, 450, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frmSnesColor = new JFrame();
+        frmSnesColor.setTitle("SNES Color");
+        frmSnesColor.setBounds(100, 100, 423, 343);
+        frmSnesColor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        JMenuBar menuBar = new JMenuBar();
+        frmSnesColor.getContentPane().add(menuBar, BorderLayout.NORTH);
+        
+        JMenu menuFile = new JMenu("File");
+        menuBar.add(menuFile);
+        
+        JMenuItem menuExit = new JMenuItem("Exit");
+        menuFile.add(menuExit);
+        
+        JMenu menuHelp = new JMenu("Help");
+        menuBar.add(menuHelp);
+        
+        JMenuItem menuAbout = new JMenuItem("About");
+        menuHelp.add(menuAbout);
+        
+        JPanel panContent = new JPanel();
+        frmSnesColor.getContentPane().add(panContent, BorderLayout.CENTER);
+        panContent.setLayout(new BoxLayout(panContent, BoxLayout.X_AXIS));
+        
+        JPanel panLeft = new JPanel();
+        panContent.add(panLeft);
+        panLeft.setLayout(new BoxLayout(panLeft, BoxLayout.Y_AXIS));
+        
+        Component rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
+        panLeft.add(rigidArea_1);
+        
+        JButton btnColorPreview = new ColorButton("");
+        btnColorPreview.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnColorPreview.setSize(80, 80);
+        btnColorPreview.setEnabled(false);
+        btnColorPreview.setMaximumSize(new Dimension(120, 120));
+        panLeft.add(btnColorPreview);
+        
+        Component rigidArea_5 = Box.createRigidArea(new Dimension(20, 20));
+        panLeft.add(rigidArea_5);
+        
+        JPanel panSliders = new JPanel();
+        panSliders.setMaximumSize(new Dimension(170, 100));
+        panLeft.add(panSliders);
+        GridBagLayout gbl_panSliders = new GridBagLayout();
+        gbl_panSliders.columnWidths = new int[] {60, 60, 60, 0};
+        gbl_panSliders.rowHeights = new int[] {35, 35, 30};
+        gbl_panSliders.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0};
+        gbl_panSliders.rowWeights = new double[]{0.0, 0.0, 0.0};
+        panSliders.setLayout(gbl_panSliders);
+        
+        JSlider sliderRed = new JSlider();
+        GridBagConstraints gbc_sliderRed = new GridBagConstraints();
+        gbc_sliderRed.gridwidth = 2;
+        gbc_sliderRed.fill = GridBagConstraints.BOTH;
+        gbc_sliderRed.insets = new Insets(0, 0, 5, 5);
+        gbc_sliderRed.gridx = 0;
+        gbc_sliderRed.gridy = 0;
+        panSliders.add(sliderRed, gbc_sliderRed);
+        
+        JSpinner spRed = new JSpinner();
+        spRed.setModel(new SpinnerNumberModel(0, 0, 31, 1));
+        GridBagConstraints gbc_spRed = new GridBagConstraints();
+        gbc_spRed.insets = new Insets(0, 0, 5, 5);
+        gbc_spRed.gridx = 2;
+        gbc_spRed.gridy = 0;
+        panSliders.add(spRed, gbc_spRed);
+        
+        JSlider sliderGreen = new JSlider();
+        GridBagConstraints gbc_sliderGreen = new GridBagConstraints();
+        gbc_sliderGreen.gridwidth = 2;
+        gbc_sliderGreen.fill = GridBagConstraints.BOTH;
+        gbc_sliderGreen.insets = new Insets(0, 0, 5, 5);
+        gbc_sliderGreen.gridx = 0;
+        gbc_sliderGreen.gridy = 1;
+        panSliders.add(sliderGreen, gbc_sliderGreen);
+        
+        JSpinner spGreen = new JSpinner();
+        spGreen.setModel(new SpinnerNumberModel(0, 0, 31, 1));
+        GridBagConstraints gbc_spGreen = new GridBagConstraints();
+        gbc_spGreen.insets = new Insets(0, 0, 5, 5);
+        gbc_spGreen.gridx = 2;
+        gbc_spGreen.gridy = 1;
+        panSliders.add(spGreen, gbc_spGreen);
+        
+        JSlider sliderBlue = new JSlider();
+        GridBagConstraints gbc_sliderBlue = new GridBagConstraints();
+        gbc_sliderBlue.gridwidth = 2;
+        gbc_sliderBlue.fill = GridBagConstraints.BOTH;
+        gbc_sliderBlue.insets = new Insets(0, 0, 0, 5);
+        gbc_sliderBlue.gridx = 0;
+        gbc_sliderBlue.gridy = 2;
+        panSliders.add(sliderBlue, gbc_sliderBlue);
+        
+        JSpinner spBlue = new JSpinner();
+        spBlue.setModel(new SpinnerNumberModel(0, 0, 31, 1));
+        GridBagConstraints gbc_spBlue = new GridBagConstraints();
+        gbc_spBlue.insets = new Insets(0, 0, 0, 5);
+        gbc_spBlue.gridx = 2;
+        gbc_spBlue.gridy = 2;
+        panSliders.add(spBlue, gbc_spBlue);
+        
+        Component rigidArea_3 = Box.createRigidArea(new Dimension(20, 20));
+        panContent.add(rigidArea_3);
+        
+        JPanel panRight = new JPanel();
+        panContent.add(panRight);
+        panRight.setLayout(new BoxLayout(panRight, BoxLayout.Y_AXIS));
+        
+        Component rigidArea_2 = Box.createRigidArea(new Dimension(20, 20));
+        panRight.add(rigidArea_2);
+        
+        JPanel panGrid = new JPanel();
+        panGrid.setMaximumSize(new Dimension(200, 200));
+        panRight.add(panGrid);
+        panGrid.setLayout(new GridLayout(4, 4, 5, 5));
+        
+        JButton btnPalette1 = new ColorButton("");
+        panGrid.add(btnPalette1);
+        
+        JButton btnPalette2 = new ColorButton("");
+        panGrid.add(btnPalette2);
+        
+        JButton btnPalette3 = new ColorButton("");
+        panGrid.add(btnPalette3);
+        
+        JButton btnPalette4 = new ColorButton("");
+        panGrid.add(btnPalette4);
+        
+        JButton btnPalette5 = new ColorButton("");
+        panGrid.add(btnPalette5);
+        
+        JButton btnPalette6 = new ColorButton("");
+        panGrid.add(btnPalette6);
+        
+        JButton btnPalette7 = new ColorButton("");
+        panGrid.add(btnPalette7);
+        
+        JButton btnPalette8 = new ColorButton("");
+        panGrid.add(btnPalette8);
+        
+        JButton btnPalette9 = new ColorButton("");
+        panGrid.add(btnPalette9);
+        
+        JButton btnPalette10 = new ColorButton("");
+        panGrid.add(btnPalette10);
+        
+        JButton btnPalette11 = new ColorButton("");
+        panGrid.add(btnPalette11);
+        
+        JButton btnPalette12 = new ColorButton("");
+        panGrid.add(btnPalette12);
+        
+        JButton btnPalette13 = new ColorButton("");
+        panGrid.add(btnPalette13);
+        
+        JButton btnPalette14 = new ColorButton("");
+        panGrid.add(btnPalette14);
+        
+        JButton btnPalette15 = new ColorButton("");
+        panGrid.add(btnPalette15);
+        
+        JButton btnPalette16 = new ColorButton("");
+        panGrid.add(btnPalette16);
+        
+        Component rigidArea_4 = Box.createRigidArea(new Dimension(20, 20));
+        panRight.add(rigidArea_4);
+        
+        JButton btnDeleteColor = new JButton("Delete color");
+        btnDeleteColor.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnDeleteColor.setMaximumSize(new Dimension(120, 40));
+        panRight.add(btnDeleteColor);
+        
+        Component rigidArea = Box.createRigidArea(new Dimension(20, 5));
+        panRight.add(rigidArea);
+        
+        JButton btnAddColor = new JButton("Add color");
+        btnAddColor.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnAddColor.setMaximumSize(new Dimension(120, 40));
+        panRight.add(btnAddColor);
+        
+        Component westSpace = Box.createRigidArea(new Dimension(20, 20));
+        frmSnesColor.getContentPane().add(westSpace, BorderLayout.WEST);
+        
+        Component eastSpace = Box.createRigidArea(new Dimension(20, 20));
+        frmSnesColor.getContentPane().add(eastSpace, BorderLayout.EAST);
+        
+        Component southSpace = Box.createRigidArea(new Dimension(20, 20));
+        frmSnesColor.getContentPane().add(southSpace, BorderLayout.SOUTH);
     }
-
 }

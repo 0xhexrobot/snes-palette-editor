@@ -15,22 +15,23 @@ import javax.swing.JButton;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BoxLayout;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.swing.JSlider;
-import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JMenuItem;
 
 public class MainWindow {
-
     private JFrame frmSnesColor;
+    private ColorButton btnColorPreview;
+    private ColorButton[] colorButtons;
+    private ColorButton btnSelectedPalette;
+    private MainController mainController;
 
-    /**
-     * Launch the application.
-     */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -44,16 +45,11 @@ public class MainWindow {
         });
     }
 
-    /**
-     * Create the application.
-     */
     public MainWindow() {
         initialize();
+        mainController = new MainController(this);
     }
 
-    /**
-     * Initialize the contents of the frame.
-     */
     private void initialize() {
         frmSnesColor = new JFrame();
         frmSnesColor.setTitle("SNES Color");
@@ -86,7 +82,7 @@ public class MainWindow {
         Component rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
         panLeft.add(rigidArea_1);
         
-        JButton btnColorPreview = new ColorButton("");
+        btnColorPreview = new ColorButton("");
         btnColorPreview.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnColorPreview.setSize(80, 80);
         btnColorPreview.setEnabled(false);
@@ -107,6 +103,10 @@ public class MainWindow {
         panSliders.setLayout(gbl_panSliders);
         
         JSlider sliderRed = new JSlider();
+        sliderRed.setMajorTickSpacing(8);
+        sliderRed.setPaintTicks(true);
+        sliderRed.setValue(0);
+        sliderRed.setMaximum(31);
         GridBagConstraints gbc_sliderRed = new GridBagConstraints();
         gbc_sliderRed.gridwidth = 2;
         gbc_sliderRed.fill = GridBagConstraints.BOTH;
@@ -124,6 +124,10 @@ public class MainWindow {
         panSliders.add(spRed, gbc_spRed);
         
         JSlider sliderGreen = new JSlider();
+        sliderGreen.setMajorTickSpacing(8);
+        sliderGreen.setPaintTicks(true);
+        sliderGreen.setValue(0);
+        sliderGreen.setMaximum(31);
         GridBagConstraints gbc_sliderGreen = new GridBagConstraints();
         gbc_sliderGreen.gridwidth = 2;
         gbc_sliderGreen.fill = GridBagConstraints.BOTH;
@@ -141,6 +145,10 @@ public class MainWindow {
         panSliders.add(spGreen, gbc_spGreen);
         
         JSlider sliderBlue = new JSlider();
+        sliderBlue.setMajorTickSpacing(8);
+        sliderBlue.setPaintTicks(true);
+        sliderBlue.setValue(0);
+        sliderBlue.setMaximum(31);
         GridBagConstraints gbc_sliderBlue = new GridBagConstraints();
         gbc_sliderBlue.gridwidth = 2;
         gbc_sliderBlue.fill = GridBagConstraints.BOTH;
@@ -244,5 +252,105 @@ public class MainWindow {
         
         Component southSpace = Box.createRigidArea(new Dimension(20, 20));
         frmSnesColor.getContentPane().add(southSpace, BorderLayout.SOUTH);
+        
+        colorButtons = new ColorButton[16];
+        colorButtons[0] = (ColorButton) btnPalette1;
+        colorButtons[1] = (ColorButton) btnPalette2;
+        colorButtons[2] = (ColorButton) btnPalette3;
+        colorButtons[3] = (ColorButton) btnPalette4;
+        colorButtons[4] = (ColorButton) btnPalette5;
+        colorButtons[5] = (ColorButton) btnPalette6;
+        colorButtons[6] = (ColorButton) btnPalette7;
+        colorButtons[7] = (ColorButton) btnPalette8;
+        colorButtons[8] = (ColorButton) btnPalette9;
+        colorButtons[9] = (ColorButton) btnPalette10;
+        colorButtons[10] = (ColorButton) btnPalette11;
+        colorButtons[11] = (ColorButton) btnPalette12;
+        colorButtons[12] = (ColorButton) btnPalette13;
+        colorButtons[13] = (ColorButton) btnPalette14;
+        colorButtons[14] = (ColorButton) btnPalette15;
+        colorButtons[15] = (ColorButton) btnPalette16;
+        
+        btnSelectedPalette = colorButtons[0];
+        
+        // menu bar events
+        
+        menuExit.addActionListener((e) -> {
+            mainController.exit();
+        });
+        
+        // Sliders events
+        
+        sliderRed.addChangeListener((e) -> {
+            int redValue = sliderRed.getValue();
+            mainController.updateRed(redValue);
+            spRed.setValue(redValue);
+        });
+        
+        sliderGreen.addChangeListener((e) -> {
+            int greenValue = sliderGreen.getValue();
+            mainController.updateGreen(greenValue);
+            spGreen.setValue(greenValue);
+        });
+        
+        sliderBlue.addChangeListener((e) -> {
+            int blueValue = sliderBlue.getValue();
+            mainController.updateBlue(blueValue);
+            spBlue.setValue(blueValue);
+        });
+        
+        // Spinners event listeners
+        
+        spRed.addChangeListener((e) -> {
+            int redValue = (int)spRed.getValue();
+            mainController.updateRed(redValue);
+            sliderRed.setValue(redValue);
+        });
+        
+        spGreen.addChangeListener((e) -> {
+            int greenValue = (int)spGreen.getValue();
+            mainController.updateGreen(greenValue);
+            sliderGreen.setValue(greenValue);
+        });
+        
+        spBlue.addChangeListener((e) -> {
+            int blueValue = (int)spBlue.getValue();
+            mainController.updateBlue(blueValue);
+            sliderBlue.setValue(blueValue);
+        });
+        
+        // palette buttons events
+        
+        ButtonActionListener btnActionListener = new ButtonActionListener();
+        
+        btnPalette1.addActionListener(btnActionListener);
+        btnPalette2.addActionListener(btnActionListener);
+        btnPalette3.addActionListener(btnActionListener);
+        btnPalette4.addActionListener(btnActionListener);
+        btnPalette5.addActionListener(btnActionListener);
+        btnPalette6.addActionListener(btnActionListener);
+        btnPalette7.addActionListener(btnActionListener);
+        btnPalette8.addActionListener(btnActionListener);
+        btnPalette9.addActionListener(btnActionListener);
+        btnPalette10.addActionListener(btnActionListener);
+        btnPalette11.addActionListener(btnActionListener);
+        btnPalette12.addActionListener(btnActionListener);
+        btnPalette13.addActionListener(btnActionListener);
+        btnPalette14.addActionListener(btnActionListener);
+        btnPalette15.addActionListener(btnActionListener);
+        btnPalette16.addActionListener(btnActionListener);
+    }
+    
+    public void updateSelectedColor(Color color) {
+        btnColorPreview.setColor(color);
+        btnSelectedPalette.setColor(color);
+    }
+    
+    private class ButtonActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            btnSelectedPalette = (ColorButton)e.getSource();
+        }
     }
 }

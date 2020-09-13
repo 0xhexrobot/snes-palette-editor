@@ -21,5 +21,6 @@ public class ColorButton extends JButton {
     
     public void setColor(Color color ) {
         this.color = color;
+        repaint();
     }
 }

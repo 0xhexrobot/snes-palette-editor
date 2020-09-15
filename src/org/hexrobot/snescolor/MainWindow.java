@@ -17,6 +17,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import java.awt.GridLayout;
@@ -272,6 +273,7 @@ public class MainWindow {
         colorButtons[15] = (ColorButton) btnPalette16;
         
         btnSelectedPalette = colorButtons[0];
+        btnSelectedPalette.setSelected(true);
         
         // menu bar events
         
@@ -346,11 +348,26 @@ public class MainWindow {
         btnSelectedPalette.setColor(color);
     }
     
+    public void updateShownPalette(List<RGB15Color> palette)  {
+        for(int i = 0; i < 16; i++) {
+            if(i < palette.size()) {
+                RGB15Color currentPalette = palette.get(i);
+                ColorButton colButton = colorButtons[i];
+                
+                colButton.setColor(currentPalette.getRGB24Color());
+                colButton.setVisible(true);
+            } else {
+                colorButtons[i].setVisible(false);
+            }
+        }
+    }
+    
     private class ButtonActionListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
+            btnSelectedPalette.setSelected(false);
             btnSelectedPalette = (ColorButton)e.getSource();
+            btnSelectedPalette.setSelected(true);
         }
     }
 }

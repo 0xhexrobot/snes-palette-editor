@@ -11,6 +11,8 @@ public class MainController {
     
     public MainController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
+        
+        mainWindow.updateShownPalette(palette);
     }
     
     public void exit() {

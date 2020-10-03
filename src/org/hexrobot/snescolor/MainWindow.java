@@ -12,6 +12,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import java.awt.Color;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -232,18 +234,18 @@ public class MainWindow {
         Component rigidArea_4 = Box.createRigidArea(new Dimension(20, 20));
         panRight.add(rigidArea_4);
         
-        JButton btnDeleteColor = new JButton("Delete color");
-        btnDeleteColor.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnDeleteColor.setMaximumSize(new Dimension(120, 40));
-        panRight.add(btnDeleteColor);
-        
-        Component rigidArea = Box.createRigidArea(new Dimension(20, 5));
-        panRight.add(rigidArea);
-        
         JButton btnAddColor = new JButton("Add color");
         btnAddColor.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnAddColor.setMaximumSize(new Dimension(120, 40));
         panRight.add(btnAddColor);
+        
+        Component rigidArea = Box.createRigidArea(new Dimension(20, 5));
+        panRight.add(rigidArea);
+        
+        JButton btnDeleteColor = new JButton("Delete color");
+        btnDeleteColor.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnDeleteColor.setMaximumSize(new Dimension(120, 40));
+        panRight.add(btnDeleteColor);
         
         Component westSpace = Box.createRigidArea(new Dimension(20, 20));
         frmSnesColor.getContentPane().add(westSpace, BorderLayout.WEST);
@@ -341,6 +343,18 @@ public class MainWindow {
         btnPalette14.addActionListener(btnActionListener);
         btnPalette15.addActionListener(btnActionListener);
         btnPalette16.addActionListener(btnActionListener);
+        
+        // add color
+        btnAddColor.addActionListener((e) -> {
+            System.out.println("Add color");
+            JDialog dialog = new AddColorFrame(frmSnesColor, mainController);
+            dialog.setVisible(true);
+        });
+        
+        // delete color
+        btnDeleteColor.addActionListener((e) -> {
+            System.out.println("Delete color");
+        });
     }
     
     public void updateSelectedColor(Color color) {

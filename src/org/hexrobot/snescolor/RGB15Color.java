@@ -7,6 +7,18 @@ public class RGB15Color {
     private int green = 0;
     private int blue = 0;
     
+    public int getRed() {
+        return red;
+    }
+    
+    public int getGreen() {
+        return green;
+    }
+    
+    public int getBlue() {
+        return blue;
+    }
+    
     public void setRed(int red) {
         if(red < 0 || red > 31) {
             throw new IllegalArgumentException("Invalid range for red: " + red);

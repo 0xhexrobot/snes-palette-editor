@@ -47,4 +47,8 @@ public class MainController {
         selectedColor.setBlue(blue);
         mainWindow.updateSelectedColor(selectedColor.getRGB24Color());
     }
+    
+    public void addColors(RGB15Color[] newColors) {
+        //TODO add colors
+    }
 }

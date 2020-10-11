@@ -7,6 +7,33 @@ public class RGB15Color {
     private int green = 0;
     private int blue = 0;
     
+    public RGB15Color() {
+    }
+
+    public RGB15Color(String hex, boolean littleEndian) {
+        int colorValue = Integer.parseInt(hex, 16);
+        
+        if(littleEndian) {
+            if((colorValue & 0xFF) > 0x7F) {
+                throw new IllegalArgumentException(hex + " is not little endian");
+            }
+            
+            colorValue = (colorValue & 0xFF) | ((colorValue >> 8) & 0xFF);
+            
+            red = colorValue & 0x1F;
+            green = (colorValue >> 5) & 0x1F;
+            blue = (colorValue >> 10) & 0x1F;
+        } else {
+            if((colorValue >> 8) > 0x7F) {
+                throw new IllegalArgumentException(hex + " is not big endian");
+            }
+            
+            red = colorValue & 0x1F;
+            green = (colorValue >> 5) & 0x1F;
+            blue = (colorValue >> 10) & 0x1F;
+        }
+    }
+    
     public int getRed() {
         return red;
     }
@@ -54,5 +81,12 @@ public class RGB15Color {
         int bgr = (blue << 10) | (green << 5) | red;
         
         return String.format("%04X", bgr);
+    }
+    
+    @Override
+    public String toString() {
+        String text = String.format("RGB15Color Red: %d, Green: %d, Blue: %d", red, green, blue);
+        
+        return text;
     }
 }

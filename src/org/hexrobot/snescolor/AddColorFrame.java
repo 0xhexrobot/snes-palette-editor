@@ -18,6 +18,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
@@ -135,21 +136,66 @@ public class AddColorFrame extends JDialog {
         clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         
         menuCopy.addActionListener((e) -> {
-            System.out.println("Copy!");
-            //TODO Copy
+            String selectedText = txtInput.getSelectedText();
+            
+            if(selectedText != null) {
+                StringSelection transferableText = new StringSelection(selectedText);
+                clipboard.setContents(transferableText, null);
+            }
         });
 
         menuCut.addActionListener((e) -> {
-            System.out.println("Cut!");
-            // TODO Cut
+            String selectedText = txtInput.getSelectedText();
+            
+            if(selectedText != null) {
+                StringSelection transferableText = new StringSelection(selectedText);
+                clipboard.setContents(transferableText, null);
+            }
+            
+            if(txtInput.getSelectedText() != null) {
+                txtInput.replaceSelection("");
+            }
         });
 
         menuPaste.addActionListener((e) -> {
-            System.out.println("Paste!");
-            // TODO Paste
+            Transferable t = clipboard.getContents(this);
+
+            if(t != null) {
+                try {
+                    if(t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                        String pastedText = (String) t.getTransferData(DataFlavor.stringFlavor);
+                        
+                        if(txtInput.getSelectedText() != null) {
+                            txtInput.replaceSelection("");
+                        }
+                        
+                        String text = txtInput.getText();
+                        int caretPosition = txtInput.getCaretPosition();
+                        
+                        if(caretPosition == 0) {
+                            text = pastedText + text;
+                            caretPosition = pastedText.length();
+                        } else if(caretPosition == text.length()) {
+                            text += pastedText;
+                            caretPosition = text.length();
+                        } else {
+                            String leftText = text.substring(0, caretPosition);
+                            String rightText = text.substring(caretPosition);
+                            
+                            text = leftText + pastedText + rightText;
+                            caretPosition += pastedText.length();
+                        }
+                        
+                        txtInput.setText(text);
+                        txtInput.setCaretPosition(caretPosition);
+                    }
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         });
         
-        bgr15Pattern = Pattern.compile("([\\da-fA-F]{2}\\s?[\\da-fA-F]{2}\\s?){1,16}");
+        bgr15Pattern = Pattern.compile("([\\da-fA-F]{2}\\s*[\\da-fA-F]{2}\\s*){1,16}");
     }
         
     private boolean isValidBRG15() {
@@ -186,15 +232,6 @@ public class AddColorFrame extends JDialog {
                             boolean clipboardNotEmpty = clipboardText.length() > 0;
                             
                             menuPaste.setEnabled(clipboardNotEmpty);
-                            
-                            byte[] bytes = clipboardText.getBytes();
-                            String ue = "";
-                            
-                            for(int  i = 0; i < bytes.length; i++) {
-                                ue += String.format("%2X", (bytes[i] & 0xFF)) + " ";
-                            }
-                            
-                            System.out.println(clipboardText + " bytes: " + ue);
                         }
                     }
                 } catch(UnsupportedFlavorException | IOException ex) {
@@ -205,10 +242,21 @@ public class AddColorFrame extends JDialog {
         	}
         });
     }
-    
+
     private RGB15Color[] parseColors() {
+        final int COLOR_CHAR_SIZE = 4;
+        
         RGB15Color[] colors;
-        // TODO parse colors
-        return null;
+        String txtColors = txtInput.getText();
+        
+        txtColors = txtColors.replaceAll("\\s", "");
+        colors = new RGB15Color[txtColors.length() / COLOR_CHAR_SIZE];
+        
+        for(int i = 0; i < txtColors.length() / COLOR_CHAR_SIZE; i++) {
+            String currentColor = txtColors.substring(i * COLOR_CHAR_SIZE, i * COLOR_CHAR_SIZE + COLOR_CHAR_SIZE);
+            colors[i] = new RGB15Color(currentColor, true);
+        }
+        
+        return colors;
     }
 }

@@ -34,6 +34,13 @@ public class MainWindow {
     private ColorButton[] colorButtons;
     private ColorButton btnSelectedPalette;
     private MainController mainController;
+    private JSlider sliderRed;
+    private JSlider sliderGreen;
+    private JSlider sliderBlue;
+    private JSpinner spRed;
+    private JSpinner spGreen;
+    private JSpinner spBlue;
+    private JButton btnDeleteColor;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -105,7 +112,7 @@ public class MainWindow {
         gbl_panSliders.rowWeights = new double[]{0.0, 0.0, 0.0};
         panSliders.setLayout(gbl_panSliders);
         
-        JSlider sliderRed = new JSlider();
+        sliderRed = new JSlider();
         sliderRed.setMajorTickSpacing(8);
         sliderRed.setPaintTicks(true);
         sliderRed.setValue(0);
@@ -118,7 +125,7 @@ public class MainWindow {
         gbc_sliderRed.gridy = 0;
         panSliders.add(sliderRed, gbc_sliderRed);
         
-        JSpinner spRed = new JSpinner();
+        spRed = new JSpinner();
         spRed.setModel(new SpinnerNumberModel(0, 0, 31, 1));
         GridBagConstraints gbc_spRed = new GridBagConstraints();
         gbc_spRed.insets = new Insets(0, 0, 5, 5);
@@ -126,7 +133,7 @@ public class MainWindow {
         gbc_spRed.gridy = 0;
         panSliders.add(spRed, gbc_spRed);
         
-        JSlider sliderGreen = new JSlider();
+        sliderGreen = new JSlider();
         sliderGreen.setMajorTickSpacing(8);
         sliderGreen.setPaintTicks(true);
         sliderGreen.setValue(0);
@@ -139,7 +146,7 @@ public class MainWindow {
         gbc_sliderGreen.gridy = 1;
         panSliders.add(sliderGreen, gbc_sliderGreen);
         
-        JSpinner spGreen = new JSpinner();
+        spGreen = new JSpinner();
         spGreen.setModel(new SpinnerNumberModel(0, 0, 31, 1));
         GridBagConstraints gbc_spGreen = new GridBagConstraints();
         gbc_spGreen.insets = new Insets(0, 0, 5, 5);
@@ -147,7 +154,7 @@ public class MainWindow {
         gbc_spGreen.gridy = 1;
         panSliders.add(spGreen, gbc_spGreen);
         
-        JSlider sliderBlue = new JSlider();
+        sliderBlue = new JSlider();
         sliderBlue.setMajorTickSpacing(8);
         sliderBlue.setPaintTicks(true);
         sliderBlue.setValue(0);
@@ -160,7 +167,7 @@ public class MainWindow {
         gbc_sliderBlue.gridy = 2;
         panSliders.add(sliderBlue, gbc_sliderBlue);
         
-        JSpinner spBlue = new JSpinner();
+        spBlue = new JSpinner();
         spBlue.setModel(new SpinnerNumberModel(0, 0, 31, 1));
         GridBagConstraints gbc_spBlue = new GridBagConstraints();
         gbc_spBlue.insets = new Insets(0, 0, 0, 5);
@@ -242,9 +249,10 @@ public class MainWindow {
         Component rigidArea = Box.createRigidArea(new Dimension(20, 5));
         panRight.add(rigidArea);
         
-        JButton btnDeleteColor = new JButton("Delete color");
+        btnDeleteColor = new JButton("Delete color");
         btnDeleteColor.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnDeleteColor.setMaximumSize(new Dimension(120, 40));
+        btnDeleteColor.setEnabled(false);
         panRight.add(btnDeleteColor);
         
         Component westSpace = Box.createRigidArea(new Dimension(20, 20));
@@ -324,36 +332,32 @@ public class MainWindow {
         });
         
         // palette buttons events
-        
-        ButtonActionListener btnActionListener = new ButtonActionListener();
-        
-        btnPalette1.addActionListener(btnActionListener);
-        btnPalette2.addActionListener(btnActionListener);
-        btnPalette3.addActionListener(btnActionListener);
-        btnPalette4.addActionListener(btnActionListener);
-        btnPalette5.addActionListener(btnActionListener);
-        btnPalette6.addActionListener(btnActionListener);
-        btnPalette7.addActionListener(btnActionListener);
-        btnPalette8.addActionListener(btnActionListener);
-        btnPalette9.addActionListener(btnActionListener);
-        btnPalette10.addActionListener(btnActionListener);
-        btnPalette11.addActionListener(btnActionListener);
-        btnPalette12.addActionListener(btnActionListener);
-        btnPalette13.addActionListener(btnActionListener);
-        btnPalette14.addActionListener(btnActionListener);
-        btnPalette15.addActionListener(btnActionListener);
-        btnPalette16.addActionListener(btnActionListener);
+        btnPalette1.addActionListener(new ButtonActionListener(0));
+        btnPalette2.addActionListener(new ButtonActionListener(1));
+        btnPalette3.addActionListener(new ButtonActionListener(2));
+        btnPalette4.addActionListener(new ButtonActionListener(3));
+        btnPalette5.addActionListener(new ButtonActionListener(4));
+        btnPalette6.addActionListener(new ButtonActionListener(5));
+        btnPalette7.addActionListener(new ButtonActionListener(6));
+        btnPalette8.addActionListener(new ButtonActionListener(7));
+        btnPalette9.addActionListener(new ButtonActionListener(8));
+        btnPalette10.addActionListener(new ButtonActionListener(9));
+        btnPalette11.addActionListener(new ButtonActionListener(10));
+        btnPalette12.addActionListener(new ButtonActionListener(11));
+        btnPalette13.addActionListener(new ButtonActionListener(12));
+        btnPalette14.addActionListener(new ButtonActionListener(13));
+        btnPalette15.addActionListener(new ButtonActionListener(14));
+        btnPalette16.addActionListener(new ButtonActionListener(15));
         
         // add color
         btnAddColor.addActionListener((e) -> {
-            System.out.println("Add color");
             JDialog dialog = new AddColorFrame(frmSnesColor, mainController);
             dialog.setVisible(true);
         });
         
         // delete color
         btnDeleteColor.addActionListener((e) -> {
-            System.out.println("Delete color");
+            mainController.removeColor();
         });
     }
     
@@ -376,12 +380,40 @@ public class MainWindow {
         }
     }
     
+    public void updateColors(List<RGB15Color> palette) {
+        updateShownPalette(palette);
+        btnDeleteColor.setEnabled(palette.size() > 1);
+    }
+    
+    public void updateSelectedButton(int index) {
+        btnSelectedPalette.setSelected(false);
+        btnSelectedPalette = colorButtons[index];
+        btnSelectedPalette.setSelected(true);
+        setPreviewColor(mainController.getPaletteColor(index));
+    }
+    
+    private void setPreviewColor(RGB15Color color) {        
+        sliderRed.setValue(color.getRed());
+        sliderGreen.setValue(color.getGreen());
+        sliderBlue.setValue(color.getBlue());
+        
+        //Note: spinner are updated automatically
+    }
+    
     private class ButtonActionListener implements ActionListener {
+        private int buttonIndex;
+        
+        public ButtonActionListener(int buttonIndex) {
+            this.buttonIndex = buttonIndex;
+        }
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             btnSelectedPalette.setSelected(false);
             btnSelectedPalette = (ColorButton)e.getSource();
             btnSelectedPalette.setSelected(true);
+            mainController.setSelectedColor(buttonIndex);
+            setPreviewColor(mainController.getPaletteColor(buttonIndex));
         }
     }
 }

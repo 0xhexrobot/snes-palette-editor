@@ -18,7 +18,7 @@ public class RGB15Color {
                 throw new IllegalArgumentException(hex + " is not little endian");
             }
             
-            colorValue = (colorValue & 0xFF) | ((colorValue >> 8) & 0xFF);
+            colorValue = ((colorValue & 0xFF) << 8) | ((colorValue >> 8) & 0xFF);
             
             red = colorValue & 0x1F;
             green = (colorValue >> 5) & 0x1F;

@@ -105,6 +105,8 @@ public class AddColorFrame extends JDialog {
             if(isValidBRG15()) {
                 mainController.addColors(parseColors());
             }
+            
+            dispose();
         });
         
         btnCancel.addActionListener((e) -> {
@@ -255,6 +257,7 @@ public class AddColorFrame extends JDialog {
         for(int i = 0; i < txtColors.length() / COLOR_CHAR_SIZE; i++) {
             String currentColor = txtColors.substring(i * COLOR_CHAR_SIZE, i * COLOR_CHAR_SIZE + COLOR_CHAR_SIZE);
             colors[i] = new RGB15Color(currentColor, true);
+            System.out.println(colors[i]);
         }
         
         return colors;

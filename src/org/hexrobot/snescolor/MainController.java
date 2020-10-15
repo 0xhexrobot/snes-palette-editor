@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainController {
+    public static final String VERSION = "v0";
     private static final int PALETTE_SIZE = 16;
     private List<RGB15Color> palette = new ArrayList<RGB15Color>(List.of(new RGB15Color()));
     private int selectedColorIndex = 0;

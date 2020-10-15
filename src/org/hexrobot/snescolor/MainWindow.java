@@ -65,6 +65,7 @@ public class MainWindow {
         frmSnesColor.setTitle("SNES Color");
         frmSnesColor.setBounds(100, 100, 423, 343);
         frmSnesColor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frmSnesColor.setResizable(false);
         
         JMenuBar menuBar = new JMenuBar();
         frmSnesColor.getContentPane().add(menuBar, BorderLayout.NORTH);
@@ -289,6 +290,11 @@ public class MainWindow {
         
         menuExit.addActionListener((e) -> {
             mainController.exit();
+        });
+        
+        menuAbout.addActionListener((e) -> {
+            JDialog dialog = new AboutFrame();
+            dialog.setVisible(true);
         });
         
         // Sliders events

@@ -33,6 +33,8 @@ import javax.swing.JMenuItem;
 
 public class AddColorFrame extends JDialog {
     private static final long serialVersionUID = 5772783691950760601L;
+    // "([\\da-fA-F]{2}\\s*[\\da-fA-F]{2}\\s*){1,16}" hex regex
+    private static final String LITTLE_ENDIAN_REGEX = "([\\da-fA-F]{2}\\s*[0-7][\\da-fA-F]\\s*){1,16}";
     private JPanel contentPane;
     private JTextField txtInput;
     private JMenuItem menuCopy;
@@ -43,6 +45,7 @@ public class AddColorFrame extends JDialog {
     
     public AddColorFrame(JFrame parent, MainController mainController) {
         super(parent, "Add color", true);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 423, 175);
         contentPane = new JPanel();
@@ -197,7 +200,7 @@ public class AddColorFrame extends JDialog {
             }
         });
         
-        bgr15Pattern = Pattern.compile("([\\da-fA-F]{2}\\s*[\\da-fA-F]{2}\\s*){1,16}");
+        bgr15Pattern = Pattern.compile(LITTLE_ENDIAN_REGEX);
     }
         
     private boolean isValidBRG15() {
@@ -245,18 +248,18 @@ public class AddColorFrame extends JDialog {
         });
     }
 
-    private RGB15Color[] parseColors() {
+    private SnesColor[] parseColors() {
         final int COLOR_CHAR_SIZE = 4;
         
-        RGB15Color[] colors;
+        SnesColor[] colors;
         String txtColors = txtInput.getText();
         
         txtColors = txtColors.replaceAll("\\s", "");
-        colors = new RGB15Color[txtColors.length() / COLOR_CHAR_SIZE];
+        colors = new SnesColor[txtColors.length() / COLOR_CHAR_SIZE];
         
         for(int i = 0; i < txtColors.length() / COLOR_CHAR_SIZE; i++) {
             String currentColor = txtColors.substring(i * COLOR_CHAR_SIZE, i * COLOR_CHAR_SIZE + COLOR_CHAR_SIZE);
-            colors[i] = new RGB15Color(currentColor, true);
+            colors[i] = new SnesColor(currentColor, true);
             System.out.println(colors[i]);
         }
         

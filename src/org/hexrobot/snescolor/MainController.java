@@ -5,11 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainController {
-    public static final String VERSION = "v0";
+    public static final String VERSION = "v1.0";
+    public static final String PROGRAM_NAME = "SNES Palette Editor";
     private static final int PALETTE_SIZE = 16;
-    private List<RGB15Color> palette = new ArrayList<RGB15Color>(List.of(new RGB15Color()));
+    private List<SnesColor> palette = new ArrayList<SnesColor>(List.of(new SnesColor()));
     private int selectedColorIndex = 0;
-    MainWindow mainWindow;
+    private MainWindow mainWindow;
     
     public MainController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -31,7 +32,7 @@ public class MainController {
     
     public void addColor() {
         if(palette.size() < PALETTE_SIZE) {
-            palette.add(new RGB15Color());
+            palette.add(new SnesColor());
         }
     }
     
@@ -47,24 +48,24 @@ public class MainController {
     }
     
     public void updateRed(int red) {
-        RGB15Color selectedColor = palette.get(selectedColorIndex);
+        SnesColor selectedColor = palette.get(selectedColorIndex);
         selectedColor.setRed(red);
         mainWindow.updateSelectedColor(selectedColor.getRGB24Color());
     }
     
     public void updateGreen(int green) {
-        RGB15Color selectedColor = palette.get(selectedColorIndex);
+        SnesColor selectedColor = palette.get(selectedColorIndex);
         selectedColor.setGreen(green);
         mainWindow.updateSelectedColor(selectedColor.getRGB24Color());
     }
     
     public void updateBlue(int blue) {
-        RGB15Color selectedColor = palette.get(selectedColorIndex);
+        SnesColor selectedColor = palette.get(selectedColorIndex);
         selectedColor.setBlue(blue);
         mainWindow.updateSelectedColor(selectedColor.getRGB24Color());
     }
     
-    public void addColors(RGB15Color[] newColors) {
+    public void addColors(SnesColor[] newColors) {
         if(palette.size() + newColors.length > PALETTE_SIZE) {
             int itemsToRemove = palette.size() + newColors.length - PALETTE_SIZE;
             palette.subList(0, itemsToRemove).clear();
@@ -74,7 +75,7 @@ public class MainController {
         mainWindow.updateColors(palette);
     }
     
-    public RGB15Color getPaletteColor(int index) {
+    public SnesColor getPaletteColor(int index) {
         return palette.get(index);
     }
 }

@@ -18,7 +18,7 @@ public class AboutFrame extends JDialog {
     private JPanel contentPane;
 
     public AboutFrame() {
-        setTitle("About SNES Color");
+        setTitle("About " + MainController.PROGRAM_NAME);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 394, 140);
         setResizable(false);
@@ -43,7 +43,7 @@ public class AboutFrame extends JDialog {
         contentPane.add(panel, BorderLayout.CENTER);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         
-        JLabel lblVersion = new JLabel("SNES Color " + MainController.VERSION);
+        JLabel lblVersion = new JLabel(String.format("%s %s", MainController.PROGRAM_NAME, MainController.VERSION));
         lblVersion.setAlignmentY(Component.TOP_ALIGNMENT);
         panel.add(lblVersion);
         

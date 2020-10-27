@@ -1,11 +1,14 @@
 package org.hexrobot.snescolor;
 
 import java.awt.EventQueue;
+import java.awt.Font;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
+
 import javax.swing.Box;
 import java.awt.Dimension;
 import javax.swing.JMenuBar;
@@ -17,6 +20,9 @@ import javax.swing.JDialog;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -25,6 +31,7 @@ import javax.swing.BoxLayout;
 import java.awt.GridLayout;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JMenuItem;
 
@@ -41,6 +48,8 @@ public class MainWindow {
     private JSpinner spGreen;
     private JSpinner spBlue;
     private JButton btnDeleteColor;
+    private JTextArea txtColorsHex;
+    private String hexText = "0000";
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -62,8 +71,8 @@ public class MainWindow {
 
     private void initialize() {
         frmSnesColor = new JFrame();
-        frmSnesColor.setTitle("SNES Color");
-        frmSnesColor.setBounds(100, 100, 423, 343);
+        frmSnesColor.setTitle(MainController.PROGRAM_NAME);
+        frmSnesColor.setBounds(100, 100, 405, 382);
         frmSnesColor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frmSnesColor.setResizable(false);
         
@@ -176,9 +185,6 @@ public class MainWindow {
         gbc_spBlue.gridy = 2;
         panSliders.add(spBlue, gbc_spBlue);
         
-        Component rigidArea_3 = Box.createRigidArea(new Dimension(20, 20));
-        panContent.add(rigidArea_3);
-        
         JPanel panRight = new JPanel();
         panContent.add(panRight);
         panRight.setLayout(new BoxLayout(panRight, BoxLayout.Y_AXIS));
@@ -262,9 +268,6 @@ public class MainWindow {
         Component eastSpace = Box.createRigidArea(new Dimension(20, 20));
         frmSnesColor.getContentPane().add(eastSpace, BorderLayout.EAST);
         
-        Component southSpace = Box.createRigidArea(new Dimension(20, 20));
-        frmSnesColor.getContentPane().add(southSpace, BorderLayout.SOUTH);
-        
         colorButtons = new ColorButton[16];
         colorButtons[0] = (ColorButton) btnPalette1;
         colorButtons[1] = (ColorButton) btnPalette2;
@@ -282,6 +285,42 @@ public class MainWindow {
         colorButtons[13] = (ColorButton) btnPalette14;
         colorButtons[14] = (ColorButton) btnPalette15;
         colorButtons[15] = (ColorButton) btnPalette16;
+        
+        JPanel panel = new JPanel();
+        frmSnesColor.getContentPane().add(panel, BorderLayout.SOUTH);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        
+        Component rigidArea_3 = Box.createRigidArea(new Dimension(20, 10));
+        panel.add(rigidArea_3);
+        
+        JPanel panel_1 = new JPanel();
+        panel.add(panel_1);
+        panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
+        
+        Component rigidArea_8 = Box.createRigidArea(new Dimension(20, 20));
+        panel_1.add(rigidArea_8);
+        
+        Font hexFont = new Font("SansSerif", 0, 10);
+        
+        txtColorsHex = new JTextArea();
+        txtColorsHex.setLineWrap(true);
+        txtColorsHex.setEditable(false);
+        txtColorsHex.setMinimumSize(new Dimension(200, 36));
+        txtColorsHex.setText("0000");
+        txtColorsHex.setFont(hexFont);
+        panel_1.add(txtColorsHex);
+        
+        Component rigidArea_7 = Box.createRigidArea(new Dimension(10, 20));
+        panel_1.add(rigidArea_7);
+        
+        JButton btnCopy = new JButton("Copy");
+        panel_1.add(btnCopy);
+        
+        Component rigidArea_9 = Box.createRigidArea(new Dimension(20, 20));
+        panel_1.add(rigidArea_9);
+        
+        Component rigidArea_6 = Box.createRigidArea(new Dimension(20, 20));
+        panel.add(rigidArea_6);
         
         btnSelectedPalette = colorButtons[0];
         btnSelectedPalette.setSelected(true);
@@ -303,18 +342,21 @@ public class MainWindow {
             int redValue = sliderRed.getValue();
             mainController.updateRed(redValue);
             spRed.setValue(redValue);
+            updateColorHex();
         });
         
         sliderGreen.addChangeListener((e) -> {
             int greenValue = sliderGreen.getValue();
             mainController.updateGreen(greenValue);
             spGreen.setValue(greenValue);
+            updateColorHex();
         });
         
         sliderBlue.addChangeListener((e) -> {
             int blueValue = sliderBlue.getValue();
             mainController.updateBlue(blueValue);
             spBlue.setValue(blueValue);
+            updateColorHex();
         });
         
         // Spinners event listeners
@@ -365,6 +407,13 @@ public class MainWindow {
         btnDeleteColor.addActionListener((e) -> {
             mainController.removeColor();
         });
+        
+        // copy hex
+        btnCopy.addActionListener((e) -> {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            StringSelection transferableText = new StringSelection(hexText);
+            clipboard.setContents(transferableText, null);
+        });
     }
     
     public void updateSelectedColor(Color color) {
@@ -372,10 +421,10 @@ public class MainWindow {
         btnSelectedPalette.setColor(color);
     }
     
-    public void updateShownPalette(List<RGB15Color> palette)  {
+    public void updateShownPalette(List<SnesColor> palette)  {
         for(int i = 0; i < 16; i++) {
             if(i < palette.size()) {
-                RGB15Color currentPalette = palette.get(i);
+                SnesColor currentPalette = palette.get(i);
                 ColorButton colButton = colorButtons[i];
                 
                 colButton.setColor(currentPalette.getRGB24Color());
@@ -386,9 +435,36 @@ public class MainWindow {
         }
     }
     
-    public void updateColors(List<RGB15Color> palette) {
+    public void updateColors(List<SnesColor> palette) {
         updateShownPalette(palette);
         btnDeleteColor.setEnabled(palette.size() > 1);
+        updateColorsHex(palette);
+    }
+    
+    private void updateColorsHex(List<SnesColor> palette) {
+        hexText = "";
+        
+        for(SnesColor color : palette) {
+            hexText += color.getBGR15String(true);
+        }
+        
+        txtColorsHex.setText(hexText);
+    }
+    
+    private void updateColorHex() {
+        int index = mainController.getSelectedColorIndex();
+        SnesColor color = mainController.getPaletteColor(index);
+        String colHex = color.getBGR15String(true);
+        char[] charArray = hexText.toCharArray();
+        int offset = index * 4;
+        
+        charArray[offset] = colHex.charAt(0);
+        charArray[offset + 1] = colHex.charAt(1);
+        charArray[offset + 2] = colHex.charAt(2);
+        charArray[offset + 3] = colHex.charAt(3);
+        
+        hexText = new String(charArray);
+        txtColorsHex.setText(hexText);
     }
     
     public void updateSelectedButton(int index) {
@@ -398,7 +474,7 @@ public class MainWindow {
         setPreviewColor(mainController.getPaletteColor(index));
     }
     
-    private void setPreviewColor(RGB15Color color) {        
+    private void setPreviewColor(SnesColor color) {        
         sliderRed.setValue(color.getRed());
         sliderGreen.setValue(color.getGreen());
         sliderBlue.setValue(color.getBlue());
